@@ -16,18 +16,22 @@ function checkConstructorNames(object) {
     }
 }
 
-function AsyncChunkNames() {}
+function AsyncChunkNames(options) {
+    this.options = options;
+}
 
 AsyncChunkNames.prototype.apply = function (compiler) {
+    const self = this;
     compiler.plugin('compilation', function (compilation) {
         compilation.plugin('seal', function () {
             compilation.modules.forEach(function (module) {
                 module.blocks.forEach(function (block) {
                     if (checkConstructorNames(block)) {
                         block.dependencies.forEach(function (dependency) {
-                            const parsedPath = path.parse(dependency.module.resource);
-                            dependency.block.chunkName = parsedPath.name;
-                            dependency.block.name = parsedPath.name;
+                            const relativepath = path.relative(process.cwd(), dependency.module.resource);
+                            const name = self.options.parser(relativepath);
+                            dependency.block.chunkName = name;
+                            dependency.block.name = name;
                         });
                     }
                 });
