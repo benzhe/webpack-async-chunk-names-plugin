@@ -1,15 +1,6 @@
-# webpack-async-chunk-names-plugin
+# webpack-custom-async-chunk-names-plugin
 
-## DEPRECATED, YOU PROBABLY DON'T NEED THIS ANYMORE
-
-https://webpack.js.org/api/module-methods/#import-
-
-```
-import(
-  /* webpackChunkName: "my-chunk-name" */
-  'module'
-);
-```
+Forked from https://github.com/kostasmanionis/webpack-async-chunk-names-plugin
 
 ## Why?
 
@@ -22,16 +13,17 @@ If you need a more robust solution, PR are very welcome.
 
 As a devDependency!
 ```
-npm i webpack-async-chunk-names-plugin -D
+npm i webpack-custom-async-chunk-names-plugin -D
 ```
 ```
-yarn add webpack-async-chunk-names-plugin -D
+yarn add webpack-custom-async-chunk-names-plugin -D
 ```
 
 ## Usage
 
 ```
 const AsyncChunkNames = require('../index');
+const filenamify = require('filenamify');
 
 module.exports = {
     entry: __dirname + '/entry.js',
@@ -41,7 +33,11 @@ module.exports = {
         chunkFilename: '[name].js'
     },
     plugins: [
-        new AsyncChunkNames()
+        new AsyncChunkNames({
+          parser: function(filepath) {
+            return filenamify(filepath);
+          }
+        })
     ]
 };
 
