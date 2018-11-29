@@ -28,10 +28,12 @@ AsyncChunkNames.prototype.apply = function (compiler) {
                 module.blocks.forEach(function (block) {
                     if (checkConstructorNames(block)) {
                         block.dependencies.forEach(function (dependency) {
-                            const relativepath = path.relative(process.cwd(), dependency.module.resource);
-                            const name = self.options.parser(relativepath);
-                            dependency.block.chunkName = name;
-                            dependency.block.name = name;
+                            if (dependency.module) {
+                                const relativepath = path.relative(process.cwd(), dependency.module.resource);
+                                const name = self.options.parser(relativepath);
+                                dependency.block.chunkName = name;
+                                dependency.block.name = name;
+                            }
                         });
                     }
                 });
